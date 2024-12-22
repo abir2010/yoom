@@ -19,7 +19,7 @@ const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
 
     console.log(user);
 
-    const client = StreamVideoClient({
+    const client = new StreamVideoClient({
       apiKey: API_KEY,
       user: {
         id: user?.id,
