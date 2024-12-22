@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import {
   CallControls,
   CallParticipantsList,
@@ -9,9 +8,14 @@ import {
   SpeakerLayout,
   useCallStateHooks,
 } from '@stream-io/video-react-sdk';
+import { LayoutList, ShareIcon, Users } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Users, LayoutList } from 'lucide-react';
+import { useState } from 'react';
 
+import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
+import EndCallButton from './EndCallButton';
+import Loader from './Loader';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,9 +23,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import Loader from './Loader';
-import EndCallButton from './EndCallButton';
-import { cn } from '@/lib/utils';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
@@ -32,6 +33,7 @@ const MeetingRoom = () => {
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
   const { useCallCallingState } = useCallStateHooks();
+  const { toast } = useToast();
 
   // for more detail about types of CallingState see: https://getstream.io/video/docs/react/ui-cookbook/ringing-call/#incoming-call-panel
   const callingState = useCallCallingState();
@@ -88,6 +90,17 @@ const MeetingRoom = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <button
+          className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]"
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            toast({
+              title: 'Meeting Link Copied. Share with your friends!',
+            });
+          }}
+        >
+          <ShareIcon size={20} className="text-white" />
+        </button>
         <CallStatsButton />
         <button onClick={() => setShowParticipants((prev) => !prev)}>
           <div className=" cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]  ">
